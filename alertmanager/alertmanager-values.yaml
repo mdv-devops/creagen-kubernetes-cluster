@@ -1,0 +1,23 @@
+alertmanager:
+  config:
+    route:
+      receiver: default
+      routes:
+        - matchers:
+            - autoscale_action="scale_up"
+          receiver: jenkins-scale-up
+
+        - matchers:
+            - autoscale_action="scale_down"
+          receiver: jenkins-scale-down
+
+    receivers:
+      - name: default
+
+      - name: jenkins-scale-up
+        webhook_configs:
+          - url: "https://jenkins.example.com/generic-webhook-trigger/invoke?token=scale-up"
+
+      - name: jenkins-scale-down
+        webhook_configs:
+          - url: "https://jenkins.example.com/generic-webhook-trigger/invoke?token=scale-down"

@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hetzner-node-autoscaler
+  namespace: monitoring
+spec:
+  groups:
+    - name: hetzner-node-autoscaler
+      rules:
+        - alert: HetznerK8sScaleUp
+          expr: |
+            count(
+              (
+                100 - (
+                  avg by(instance)(
+                    rate(node_cpu_seconds_total{mode="idle"}[5m])
+                  ) * 100
+                )
+              ) > 75
+            ) >= 2
+          for: 15m
+          labels:
+            autoscale_action: scale_up
+
+        - alert: HetznerK8sScaleDown
+          expr: |
+            count(
+              (
+                100 - (
+                  avg by(instance)(
+                    rate(node_cpu_seconds_total{mode="idle"}[5m])
+                  ) * 100
+                )
+              ) < 35
+            ) >= 3
+          for: 60m
+          labels:
+            autoscale_action: scale_down

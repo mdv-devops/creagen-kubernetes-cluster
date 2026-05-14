@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    environment {
+        HCLOUD_TOKEN = credentials('HCLOUD_TOKEN')
+    }
+
+    options {
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
+    stages {
+        stage('Scale Down') {
+            steps {
+                lock(resource: 'terraform-creagen-autoscaler') {
+                    sh 'chmod +x scripts/scale-down.sh'
+                    sh './scripts/scale-down.sh'
+                }
+            }
+        }
+    }
+}
