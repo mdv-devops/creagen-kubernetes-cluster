@@ -16,6 +16,9 @@ git clone "$REPO_URL" "$WORKDIR"
 
 cd "$TF_DIR"
 
+git config user.name "jenkins-autoscaler"
+git config user.email "jenkins-autoscaler@medevelop.studio"
+
 CURRENT_COUNT=$(jq -r '.worker_count' worker_count.auto.tfvars.json)
 
 if [ "$CURRENT_COUNT" -le "$MIN_NODES" ]; then
