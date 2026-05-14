@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-export TERM=dumb
 export TF_VAR_hcloud_token="${HCLOUD_TOKEN}"
 export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
 export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
@@ -36,12 +35,12 @@ jq --argjson count "$NEW_COUNT"   '.worker_count = $count'   worker_count.auto.t
 
 mv tmp.json worker_count.auto.tfvars.json
 
-terraform init
-terraform plan -out=tfplan
+terraform init -no-color
+terraform plan -no-color -out=tfplan
 
 terraform show -no-color tfplan
 
-terraform apply -auto-approve tfplan
+terraform apply -no-color -auto-approve tfplan
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
