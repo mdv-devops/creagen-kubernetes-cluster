@@ -40,7 +40,10 @@ terraform plan -out=tfplan
 
 terraform show -no-color tfplan
 
-terraform apply -auto-approve tfplan
+terraform apply \
+  -target='module.kubernetes.hcloud_server.worker' \
+  -target='module.kubernetes.talos_machine_configuration_apply.worker' \
+  -auto-approve
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 

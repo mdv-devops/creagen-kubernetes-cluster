@@ -46,7 +46,10 @@ terraform plan -out=tfplan
 
 terraform show -no-color tfplan | grep "$NODE_TO_REMOVE"
 
-terraform apply -auto-approve tfplan
+terraform apply \
+  -target='module.kubernetes.hcloud_server.worker' \
+  -target='module.kubernetes.talos_machine_configuration_apply.worker' \
+  -auto-approve
 
 git add worker_count.auto.tfvars.json
 git commit -m "autoscale: scale down workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
