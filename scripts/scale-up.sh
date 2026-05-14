@@ -38,6 +38,9 @@ mv tmp.json worker_count.auto.tfvars.json
 terraform init
 terraform apply -auto-approve
 
+pwd
+ls -la
+
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
 kubectl --kubeconfig kubeconfig wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
