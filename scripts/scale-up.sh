@@ -35,16 +35,35 @@ jq --argjson count "$NEW_COUNT"   '.worker_count = $count'   worker_count.auto.t
 
 mv tmp.json worker_count.auto.tfvars.json
 
-terraform init -no-color
-terraform plan -no-color -out=tfplan
+terraform init
+terraform plan -out=tfplan
 
-terraform show -no-color tfplan
+terraform show tfplan
 
-terraform apply -no-color -auto-approve tfplan
+terraform apply -auto-approve tfplan
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
-kubectl wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
+echo "Waiting for Kubernetes node object: ${EXPECTED_NODE}"
+
+timeout 900 bash -c '
+  until kubectl get node "'"${EXPECTED_NODE}"'" >/dev/null 2>&1; do
+    echo "Node '"${EXPECTED_NODE}"' not found yet. Waiting..."
+    sleep 15
+  done
+'
+
+echo "Node ${EXPECTED_NODE} exists. Waiting for Ready condition..."
+
+kubectl wait \
+  --for=condition=Ready \
+  "node/${EXPECTED_NODE}" \
+  --timeout=15m
+
+echo "Node ${EXPECTED_NODE} is Ready. Waiting 60s for cluster components..."
+sleep 60
+
+echo "Scale up completed"
 
 git add worker_count.auto.tfvars.json
 git commit -m "autoscale: scale up workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
