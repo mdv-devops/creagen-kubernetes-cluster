@@ -33,7 +33,15 @@ NODE_TO_REMOVE="creagen-worker-${CURRENT_COUNT}"
 
 kubectl cordon "$NODE_TO_REMOVE"
 
-kubectl drain "$NODE_TO_REMOVE"   --ignore-daemonsets   --delete-emptydir-data   --timeout=10m
+kubectl drain "$NODE_TO_REMOVE" \
+  --ignore-daemonsets \
+  --delete-emptydir-data \
+  --timeout=10m
+
+DRAIN_SETTLE_SECONDS=120
+
+echo "Waiting ${DRAIN_SETTLE_SECONDS}s after drain..."
+sleep "$DRAIN_SETTLE_SECONDS"
 
 NEW_COUNT=$((CURRENT_COUNT - 1))
 
@@ -46,10 +54,7 @@ terraform plan -out=tfplan
 
 terraform show -no-color tfplan | grep "$NODE_TO_REMOVE"
 
-terraform apply \
-  -target='module.kubernetes.hcloud_server.worker' \
-  -target='module.kubernetes.talos_machine_configuration_apply.worker' \
-  -auto-approve
+terraform apply -auto-approve tfplan
 
 git add worker_count.auto.tfvars.json
 git commit -m "autoscale: scale down workers ${CURRENT_COUNT} -> ${NEW_COUNT}"

@@ -1,5 +1,6 @@
 module "kubernetes" {
-  source = "git::https://github.com/mdv-devops/terraform-hcloud-kubernetes.git?ref=v3.30.2"
+  //  source = "git::https://github.com/mdv-devops/terraform-hcloud-kubernetes.git?ref=v3.30.2"
+  source = "git::https://github.com/mdv-devops/terraform-hcloud-kubernetes.git?ref=main"
 
   cluster_name = "creagen"
   hcloud_token = var.hcloud_token

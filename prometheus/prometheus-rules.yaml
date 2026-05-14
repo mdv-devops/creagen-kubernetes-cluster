@@ -69,9 +69,9 @@ spec:
           annotations:
             summary: "Scale up worker nodes"
             description: |
-              Worker node CPU > 75%
+              Worker node CPU > 85%
               OR
-              Worker node memory > 80%
+              Worker node memory > 90%
               on 2 or more worker nodes for 15 minutes.
 
         - alert: HetznerK8sScaleDown
