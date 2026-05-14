@@ -24,7 +24,7 @@ pipeline {
             container('terraform') {
                 lock(resource: 'terraform-creagen-autoscaler') {
 
-                    sshagent(credentials: ['github-creagen-autoscaler']) {
+                    sshagent(credentials: ['jenkins']) {
 
                         sh 'chmod +x scripts/scale-down.sh'
                         sh './scripts/scale-down.sh'
