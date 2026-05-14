@@ -28,7 +28,7 @@ pipeline {
 
                     lock(resource: 'terraform-creagen-autoscaler') {
 
-                        sshagent(credentials: ['jenkins']) {
+                        sshagent(credentials: ['github-ssh']) {
 
                             sh 'chmod +x scripts/scale-up.sh'
                             sh './scripts/scale-up.sh'
