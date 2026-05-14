@@ -19,12 +19,17 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-    stages {
-        stage('Scale Up') {
-            steps {
+    stage('Scale Up') {
+        steps {
+            container('terraform') {
                 lock(resource: 'terraform-creagen-autoscaler') {
-                    sh 'chmod +x scripts/scale-up.sh'
-                    sh './scripts/scale-up.sh'
+
+                    sshagent(credentials: ['jenkins']) {
+
+                        sh 'chmod +x scripts/scale-up.sh'
+                        sh './scripts/scale-up.sh'
+
+                    }
                 }
             }
         }

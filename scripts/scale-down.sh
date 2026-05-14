@@ -5,12 +5,15 @@ export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
 export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
 export AWS_DEFAULT_REGION="us-east-1"
 
-REPO_URL="https://github.com/mdv-devops/creagen-kubernetes-cluster.git"
+REPO_URL="git@github.com:mdv-devops/creagen-kubernetes-cluster.git"
 WORKDIR="/tmp/terraform-kubernetes"
 TF_DIR="$WORKDIR/terraform"
 MIN_NODES=3
 
 rm -rf "$WORKDIR"
+
+mkdir -p ~/.ssh
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 git clone "$REPO_URL" "$WORKDIR"
 
