@@ -15,7 +15,7 @@ module "kubernetes" {
 
   hcloud_ccm_load_balancers_location = "nbg1"
 
-  cluster_delete_protection = true
+  cluster_delete_protection = false
 
   kube_api_admission_control = [
     {
