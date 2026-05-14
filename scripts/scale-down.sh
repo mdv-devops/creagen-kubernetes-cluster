@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-export TF_VAR_hcloud_token="${CREAGEN_HCLOUD_TOKEN}"
-export AWS_ACCESS_KEY_ID="${REMOTE_STATE_AWS_ACCESS_KEY_ID}"
-export AWS_SECRET_ACCESS_KEY="${REMOTE_STATE_AWS_SECRET_ACCESS_KEY}"
+export TF_VAR_hcloud_token="${HCLOUD_TOKEN}"
+export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
 export AWS_DEFAULT_REGION="us-east-1"
 
 REPO_URL="git@github.com:YOUR_ORG/terraform-kubernetes.git"
