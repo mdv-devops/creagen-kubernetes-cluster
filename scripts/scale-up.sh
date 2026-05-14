@@ -43,7 +43,7 @@ ls -la
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
-kubectl --kubeconfig kubeconfig wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
+kubectl wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
 
 git add worker_count.auto.tfvars.json
 git commit -m "autoscale: scale up workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
