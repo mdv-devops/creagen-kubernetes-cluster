@@ -36,10 +36,11 @@ jq --argjson count "$NEW_COUNT"   '.worker_count = $count'   worker_count.auto.t
 mv tmp.json worker_count.auto.tfvars.json
 
 terraform init
-terraform apply -auto-approve
+terraform plan -out=tfplan
 
-pwd
-ls -la
+terraform show -no-color tfplan | grep "$NODE_TO_REMOVE"
+
+terraform apply -auto-approve tfplan
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
