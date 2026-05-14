@@ -38,7 +38,7 @@ mv tmp.json worker_count.auto.tfvars.json
 terraform init
 terraform plan -out=tfplan
 
-terraform show -no-color tfplan | grep "$NODE_TO_REMOVE"
+terraform show -no-color tfplan
 
 terraform apply -auto-approve tfplan
 
