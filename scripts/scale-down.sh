@@ -41,13 +41,13 @@ jq --argjson count "$NEW_COUNT"   '.worker_count = $count'   worker_count.auto.t
 
 mv tmp.json worker_count.auto.tfvars.json
 
-git add worker_count.auto.tfvars.json
-git commit -m "autoscale: scale down workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
-git push
-
 terraform init
 terraform plan -out=tfplan
 
 terraform show -no-color tfplan | grep "$NODE_TO_REMOVE"
 
 terraform apply -auto-approve tfplan
+
+git add worker_count.auto.tfvars.json
+git commit -m "autoscale: scale down workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
+git push

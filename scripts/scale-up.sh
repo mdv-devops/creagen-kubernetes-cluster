@@ -35,13 +35,13 @@ jq --argjson count "$NEW_COUNT"   '.worker_count = $count'   worker_count.auto.t
 
 mv tmp.json worker_count.auto.tfvars.json
 
-git add worker_count.auto.tfvars.json
-git commit -m "autoscale: scale up workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
-git push
-
 terraform init
 terraform apply -auto-approve
 
 EXPECTED_NODE="creagen-worker-${NEW_COUNT}"
 
-kubectl wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
+kubectl --kubeconfig kubeconfig wait   --for=condition=Ready   "node/${EXPECTED_NODE}"   --timeout=15m
+
+git add worker_count.auto.tfvars.json
+git commit -m "autoscale: scale up workers ${CURRENT_COUNT} -> ${NEW_COUNT}"
+git push
