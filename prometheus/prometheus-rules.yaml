@@ -3,36 +3,136 @@ kind: PrometheusRule
 metadata:
   name: hetzner-node-autoscaler
   namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+
 spec:
   groups:
     - name: hetzner-node-autoscaler
       rules:
+
         - alert: HetznerK8sScaleUp
           expr: |
-            count(
-              (
-                100 - (
-                  avg by(instance)(
-                    rate(node_cpu_seconds_total{mode="idle"}[5m])
-                  ) * 100
-                )
-              ) > 75
-            ) >= 2
+            (
+              count(
+                (
+                  (
+                    100 - (
+                      avg by(instance) (
+                        rate(node_cpu_seconds_total{mode="idle"}[5m])
+                      ) * 100
+                    )
+                  )
+                  * on(instance) group_left(node)
+                  label_replace(
+                    kube_node_info{node=~".*-worker-.*"},
+                    "instance",
+                    "$1:9100",
+                    "internal_ip",
+                    "(.+)"
+                  )
+                ) > 75
+              ) >= 2
+            )
+            or
+            (
+              count(
+                (
+                  (
+                    (
+                      1 -
+                      (
+                        node_memory_MemAvailable_bytes
+                        /
+                        node_memory_MemTotal_bytes
+                      )
+                    ) * 100
+                  )
+                  * on(instance) group_left(node)
+                  label_replace(
+                    kube_node_info{node=~".*-worker-.*"},
+                    "instance",
+                    "$1:9100",
+                    "internal_ip",
+                    "(.+)"
+                  )
+                ) > 80
+              ) >= 2
+            )
+
           for: 15m
+
           labels:
+            severity: warning
             autoscale_action: scale_up
+
+          annotations:
+            summary: "Scale up worker nodes"
+            description: |
+              Worker node CPU > 75%
+              OR
+              Worker node memory > 80%
+              on 2 or more worker nodes for 15 minutes.
 
         - alert: HetznerK8sScaleDown
           expr: |
-            count(
-              (
-                100 - (
-                  avg by(instance)(
-                    rate(node_cpu_seconds_total{mode="idle"}[5m])
-                  ) * 100
-                )
-              ) < 35
-            ) >= 3
+            (
+              count(
+                (
+                  (
+                    100 - (
+                      avg by(instance) (
+                        rate(node_cpu_seconds_total{mode="idle"}[5m])
+                      ) * 100
+                    )
+                  )
+                  * on(instance) group_left(node)
+                  label_replace(
+                    kube_node_info{node=~".*-worker-.*"},
+                    "instance",
+                    "$1:9100",
+                    "internal_ip",
+                    "(.+)"
+                  )
+                ) < 55
+              ) >= 3
+            )
+            and
+            (
+              count(
+                (
+                  (
+                    (
+                      1 -
+                      (
+                        node_memory_MemAvailable_bytes
+                        /
+                        node_memory_MemTotal_bytes
+                      )
+                    ) * 100
+                  )
+                  * on(instance) group_left(node)
+                  label_replace(
+                    kube_node_info{node=~".*-worker-.*"},
+                    "instance",
+                    "$1:9100",
+                    "internal_ip",
+                    "(.+)"
+                  )
+                ) < 70
+              ) >= 3
+            )
+
           for: 60m
+
           labels:
+            severity: info
             autoscale_action: scale_down
+
+          annotations:
+            summary: "Scale down worker nodes"
+            description: |
+              Worker node CPU < 55%
+              AND
+              Worker node memory < 70%
+              on 3 or more worker nodes for 60 minutes.

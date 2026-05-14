@@ -17,6 +17,28 @@ module "kubernetes" {
 
   cluster_delete_protection = true
 
+  kube_api_admission_control = [
+    {
+      name = "PodSecurity"
+      configuration = {
+        apiVersion = "pod-security.admission.config.k8s.io/v1alpha1"
+        kind       = "PodSecurityConfiguration"
+
+        defaults = {
+          enforce = "privileged"
+          warn    = "baseline"
+          audit   = "baseline"
+        }
+
+        exemptions = {
+          namespaces     = []
+          runtimeClasses = []
+          usernames      = []
+        }
+      }
+    }
+  ]
+
   control_plane_nodepools = [
     {
       name     = "control-plane"

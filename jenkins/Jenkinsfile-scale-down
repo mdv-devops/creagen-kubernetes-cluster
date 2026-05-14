@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            yamlFile 'jenkins/builder.yaml'
+            defaultContainer 'terraform'
+        }
+    }
 
     environment {
         HCLOUD_TOKEN = credentials('CREAGEN_HCLOUD_TOKEN')
