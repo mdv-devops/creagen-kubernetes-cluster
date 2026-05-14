@@ -10,11 +10,10 @@ spec:
   groups:
     - name: hetzner-node-autoscaler
       rules:
-
         - alert: HetznerK8sScaleUp
           expr: |
             (
-              count(
+              avg(
                 (
                   (
                     100 - (
@@ -31,12 +30,12 @@ spec:
                     "internal_ip",
                     "(.+)"
                   )
-                ) > 85
-              ) >= 2
+                )
+              ) > 85
             )
             or
             (
-              count(
+              avg(
                 (
                   (
                     (
@@ -56,28 +55,25 @@ spec:
                     "internal_ip",
                     "(.+)"
                   )
-                ) > 90
-              ) >= 2
+                )
+              ) > 90
             )
-
           for: 3m
-
           labels:
             severity: warning
             autoscale_action: scale_up
-
           annotations:
             summary: "Scale up worker nodes"
             description: |
-              Worker node CPU > 85%
+              Average worker node CPU > 85%
               OR
-              Worker node memory > 90%
-              on 2 or more worker nodes for 15 minutes.
+              average worker node memory > 90%
+              for 3 minutes.
 
         - alert: HetznerK8sScaleDown
           expr: |
             (
-              count(
+              avg(
                 (
                   (
                     100 - (
@@ -94,12 +90,12 @@ spec:
                     "internal_ip",
                     "(.+)"
                   )
-                ) < 55
-              ) >= 3
+                )
+              ) < 55
             )
             and
             (
-              count(
+              avg(
                 (
                   (
                     (
@@ -119,20 +115,17 @@ spec:
                     "internal_ip",
                     "(.+)"
                   )
-                ) < 70
-              ) >= 3
+                )
+              ) < 70
             )
-
           for: 5m
-
           labels:
             severity: warning
             autoscale_action: scale_down
-
           annotations:
             summary: "Scale down worker nodes"
             description: |
-              Worker node CPU < 55%
+              Average worker node CPU < 55%
               AND
-              Worker node memory < 70%
-              on 3 or more worker nodes for 60 minutes.
+              average worker node memory < 70%
+              for 5 minutes.
