@@ -8,7 +8,7 @@ spec:
 
   containers:
     - name: terraform
-      image: marinyuk/jenkins-agent:v-1.0.0-autoscaller
+      image: marinyuk/jenkins-agent:v-1.0.1-autoscaller
       imagePullPolicy: IfNotPresent
       command:
         - cat
