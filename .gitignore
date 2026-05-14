@@ -1,0 +1,46 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plans
+*.tfplan
+plan.out
+
+# Sensitive variables
+*.auto.tfvars
+#*.auto.tfvars.json
+terraform.tfvars
+terraform.tfvars.json
+
+# Local configs
+kubeconfig
+talosconfig
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Temp
+tmp/
+temp/
+
+# Jenkins workspace artifacts
+workspace/
+
+# Bash
+*.swp
+*.bak
