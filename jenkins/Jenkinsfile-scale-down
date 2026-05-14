@@ -20,24 +20,21 @@ pipeline {
     }
 
     stages {
-
         stage('Scale Down') {
             steps {
-
                 container('terraform') {
-
                     lock(resource: 'terraform-creagen-autoscaler') {
-
                         sshagent(credentials: ['github-ssh']) {
-
-                            sh 'chmod +x scripts/scale-down.sh'
-                            sh './scripts/scale-down.sh'
-
+                            withCredentials([
+                                file(credentialsId: 'CREAGEN_KUBECONFIG', variable: 'KUBECONFIG')
+                            ]) {
+                                sh 'chmod +x scripts/scale-down.sh'
+                                sh './scripts/scale-down.sh'
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 }
