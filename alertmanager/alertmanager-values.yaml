@@ -1,19 +1,20 @@
 alertmanager:
   config:
     route:
-      receiver: jenkins
       routes:
-        - matchers:
-            - autoscale_action="scale_up"
-          receiver: jenkins-scale-up
-
-        - matchers:
-            - autoscale_action="scale_down"
-          receiver: jenkins-scale-down
+      - receiver: jenkins-scale-up
+        matchers:
+          - autoscale_action="scale_up"
+          - severity="skaling"        
+        continue: false
+      - receiver: jenkins-scale-down
+        matchers:
+          - autoscale_action="scale_down"
+          - severity="skaling"
+        continue: false
+        repeat_interval: 12h
 
     receivers:
-      - name: jenkins
-
       - name: jenkins-scale-up
         webhook_configs:
           - url: "https://jenkins.medevelop.studio/generic-webhook-trigger/invoke?token=scale-up"
