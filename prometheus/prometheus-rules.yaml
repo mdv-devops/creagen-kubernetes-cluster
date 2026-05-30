@@ -58,9 +58,9 @@ spec:
                 )
               ) > 90
             )
-          for: 3m
+          for: 2m
           labels:
-            severity: warning
+#            severity: scaling-up
             autoscale_action: scale_up
           annotations:
             summary: "Scale up worker nodes"
@@ -118,9 +118,9 @@ spec:
                 )
               ) < 70
             )
-          for: 5m
+          for: 2m
           labels:
-            severity: warning
+#            severity: scaling-down
             autoscale_action: scale_down
           annotations:
             summary: "Scale down worker nodes"
